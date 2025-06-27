@@ -494,6 +494,7 @@ add_library(
   trust_token/pmbtoken.c
   trust_token/trust_token.c
   trust_token/voprf.c
+  usage_tracker/usage_tracker.c
   x509/a_digest.c
   x509/a_sign.c
   x509/a_verify.c

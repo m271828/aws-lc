@@ -245,6 +245,8 @@ int AES_unwrap_key_padded(const AES_KEY *key, uint8_t *out, size_t *out_len,
   *out_len = constant_time_select_w(ok, claimed_len, 0);
   const int ret = ok & 1;
   if(ret) {
+
+    crypto_usage_update_state(NID_aes, 0);
     FIPS_service_indicator_update_state();
   }
   return ret;

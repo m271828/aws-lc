@@ -3,40 +3,48 @@
 #include "../crypto/internal.h"
 #include "internal.h"
 
-CRYPTO_once_t initialized = CRYPTO_ONCE_INIT;
-static CRYPTO_refcount_t usage[LOG_ALGORITHM_COUNT];
+struct CRYPTO_STATIC_MUTEX lock = CRYPTO_STATIC_MUTEX_INIT;
+int initialized = 0;
+log_call *log;
+log_evp_call *log_evp;
+log_call_and_fips_status *log_with_fips_status;
+log_call_with_params *log_with_params;
+log_call_with_params_and_fips_status *log_with_params_and_fips_status;
 
-static void crypto_usage_init(void) {
-  for (int i = 0; i < LOG_ALGORITHM_COUNT; i++) {
-    usage[i] = 0;
+
+void init_logging(log_call *log_call,
+                  log_evp_call *log_evp_call,
+                  log_call_and_fips_status *log_call_and_fips_status,
+                  log_call_with_params *log_call_with_params,
+                  log_call_with_params_and_fips_status *log_call_with_params_and_fips_status) {
+  CRYPTO_STATIC_MUTEX_lock_write(&lock);
+  if (initialized == 0) {
+    initialized = 1;
+    log = log_call;
+    log_evp = log_evp_call;
+    log_with_fips_status = log_call_and_fips_status;
+    log_with_params = log_call_with_params;
+    log_with_params_and_fips_status = log_call_with_params_and_fips_status;
   }
+  CRYPTO_STATIC_MUTEX_unlock_write(&lock);
 }
 
-void crypto_usage_update_state(enum algorithm_log_t id) {
-  CRYPTO_once(&initialized, crypto_usage_init);
-  CRYPTO_refcount_inc(&usage[id]);
+int logging_enabled() {
+  return log != NULL;
 }
 
-#define MD5_STR "md5\0"
-#define AES_STR "aes (generic)\0"
-
-static const char* lookup_algorithm_name(enum algorithm_log_t id) {
-  switch (id) {
-    case LOG_AES:
-      return AES_STR;
-    case LOG_MD5:
-      return MD5_STR;
-    default:
-      return NULL;
-  }
+int include_fips() {
+  return log_with_fips_status != NULL;
 }
 
-void get_crypto_usage(read_crypto_usage_t *cb) {
-  for (int i = 0; i < LOG_ALGORITHM_COUNT; i++) {
-    if (usage[i] != 0) {
-      if ((*cb)(lookup_algorithm_name(i), usage[i]) <= 0) {
-        break;
-      }
-    }
-  }
+int include_params() {
+  return log_with_params != NULL;
+}
+
+int include_evp_calls() {
+  return log_evp != NULL;
+}
+
+int include_evp_params() {
+  return log_with_params != NULL;
 }

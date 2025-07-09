@@ -67,27 +67,7 @@
 
 
 uint8_t *MD5(const uint8_t *data, size_t len, uint8_t out[MD5_DIGEST_LENGTH]) {
-  if (logging_enabled()) {
-    if (include_params()) {
-      struct parameter_info_t *parameter_info = init_parameter_info();
-      struct parameter_t *data_parameter = construct_array_parameter(TYPE_UINT8_T, &len, &data);
-      add_parameter(parameter_info, data_parameter);
-      struct parameter_t *length_parameter = construct_parameter(TYPE_SIZE_T, &len);
-      add_parameter(parameter_info, length_parameter);
-
-      if (include_fips()) {
-        log_function_call("MD5", parameter_info, AWSLC_NOT_APPROVED);
-      } else {
-        log_function_call("MD5", parameter_info);
-      }
-
-      delete_parameter_info(parameter_info);
-    } else if (include_fips()) {
-      log_function_call("MD5", AWSLC_NOT_APPROVED);
-    } else {
-      log_function_call("MD5");
-    }
-  }
+  log_function_call("MD5", AWSLC_NOT_APPROVED);
 
   MD5_CTX ctx;
   MD5_Init(&ctx);
@@ -98,25 +78,7 @@ uint8_t *MD5(const uint8_t *data, size_t len, uint8_t out[MD5_DIGEST_LENGTH]) {
 }
 
 int MD5_Init(MD5_CTX *md5) {
-  if (logging_enabled()) {
-    if (include_params()) {
-      struct parameter_info_t *parameter_info = init_parameter_info();
-      struct parameter_t *data_parameter = construct_parameter(TYPE_STRUCT, &md5);
-      add_parameter(parameter_info, data_parameter);
-
-      if (include_fips()) {
-        log_function_call("MD5_Init", parameter_info, AWSLC_NOT_APPROVED);
-      } else {
-        log_function_call("MD5_Init", parameter_info);
-      }
-
-      delete_parameter_info(parameter_info);
-    } else if (include_fips()) {
-      log_function_call("MD5_Init", AWSLC_NOT_APPROVED);
-    } else {
-      log_function_call("MD5_Init");
-    }
-  }
+  log_function_call("MD5_Init", AWSLC_NOT_APPROVED);
 
   OPENSSL_memset(md5, 0, sizeof(MD5_CTX));
   md5->h[0] = 0x67452301UL;
@@ -155,16 +117,19 @@ static void md5_block_data_order(uint32_t *state, const uint8_t *data,
 #endif
 
 void MD5_Transform(MD5_CTX *c, const uint8_t data[MD5_CBLOCK]) {
+  log_function_call("MD5_Transform", AWSLC_NOT_APPROVED);
   md5_block_data_order(c->h, data, 1);
 }
 
 int MD5_Update(MD5_CTX *c, const void *data, size_t len) {
+  log_function_call("MD5_Update", AWSLC_NOT_APPROVED);
   crypto_md32_update(&md5_block_data_order, c->h, c->data, MD5_CBLOCK, &c->num,
                      &c->Nh, &c->Nl, data, len);
   return 1;
 }
 
 int MD5_Final(uint8_t out[MD5_DIGEST_LENGTH], MD5_CTX *c) {
+  log_function_call("MD5_Final", AWSLC_NOT_APPROVED);
   crypto_md32_final(&md5_block_data_order, c->h, c->data, MD5_CBLOCK, &c->num,
                     c->Nh, c->Nl, /*is_big_endian=*/0);
 

@@ -50,8 +50,9 @@
 
 #include <assert.h>
 
-#include "internal.h"
+#include "../../usage_tracker/internal.h"
 #include "../modes/internal.h"
+#include "internal.h"
 
 
 // Be aware that different sets of AES functions use incompatible key
@@ -60,6 +61,7 @@
 // code, above, is incompatible with the |aes_hw_*| functions.
 
 void AES_encrypt(const uint8_t *in, uint8_t *out, const AES_KEY *key) {
+  log_function_call("AES_encrypt", NOT_APPLICABLE);
   SET_DIT_AUTO_RESET;
   if (hwaes_capable()) {
     aes_hw_encrypt(in, out, key);
@@ -71,6 +73,7 @@ void AES_encrypt(const uint8_t *in, uint8_t *out, const AES_KEY *key) {
 }
 
 void AES_decrypt(const uint8_t *in, uint8_t *out, const AES_KEY *key) {
+  log_function_call("AES_decrypt", NOT_APPLICABLE);
   SET_DIT_AUTO_RESET;
   if (hwaes_capable()) {
     aes_hw_decrypt(in, out, key);
@@ -82,6 +85,7 @@ void AES_decrypt(const uint8_t *in, uint8_t *out, const AES_KEY *key) {
 }
 
 int AES_set_encrypt_key(const uint8_t *key, unsigned bits, AES_KEY *aeskey) {
+  log_function_call("AES_set_encrypt_key", NOT_APPLICABLE);
   SET_DIT_AUTO_RESET;
   if (bits != 128 && bits != 192 && bits != 256) {
     return -2;
@@ -96,6 +100,7 @@ int AES_set_encrypt_key(const uint8_t *key, unsigned bits, AES_KEY *aeskey) {
 }
 
 int AES_set_decrypt_key(const uint8_t *key, unsigned bits, AES_KEY *aeskey) {
+  log_function_call("AES_set_decrypt_key", NOT_APPLICABLE);
   SET_DIT_AUTO_RESET;
   if (bits != 128 && bits != 192 && bits != 256) {
     return -2;

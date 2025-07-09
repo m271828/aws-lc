@@ -102,6 +102,7 @@ void AES_ctr128_encrypt(const uint8_t *in, uint8_t *out, size_t len,
   }
 
   FIPS_service_indicator_update_state();
+  log_function_call("AES_ctr128_encrypt", FIPS_service_indicator_after_call());
 }
 
 void AES_ecb_encrypt(const uint8_t *in, uint8_t *out, const AES_KEY *key,

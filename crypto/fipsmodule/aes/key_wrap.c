@@ -247,8 +247,10 @@ int AES_unwrap_key_padded(const AES_KEY *key, uint8_t *out, size_t *out_len,
   const int ret = ok & 1;
   if(ret) {
 
-    crypto_usage_update_state(LOG_AES, 0);
+    crypto_usage_update_state(LOG_AES, AWSLC_APPROVED);
     FIPS_service_indicator_update_state();
+  } else {
+    crypto_usage_update_state(LOG_AES, AWSLC_NOT_APPROVED);
   }
   return ret;
 }

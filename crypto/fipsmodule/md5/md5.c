@@ -123,7 +123,7 @@ int MD5_Update(MD5_CTX *c, const void *data, size_t len) {
 }
 
 int MD5_Final(uint8_t out[MD5_DIGEST_LENGTH], MD5_CTX *c) {
-  crypto_usage_update_state(LOG_MD5, 0);
+  crypto_usage_update_state(LOG_MD5, AWSLC_NOT_APPROVED);
   crypto_md32_final(&md5_block_data_order, c->h, c->data, MD5_CBLOCK, &c->num,
                     c->Nh, c->Nl, /*is_big_endian=*/0);
 

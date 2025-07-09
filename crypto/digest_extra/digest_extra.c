@@ -121,6 +121,9 @@ const EVP_MD* EVP_get_digestbynid(int nid) {
 
   for (unsigned i = 0; i < OPENSSL_ARRAY_SIZE(nid_to_digest_mapping); i++) {
     if (nid_to_digest_mapping[i].nid == nid) {
+      if (nid == NID_md5) {
+
+      }
       return nid_to_digest_mapping[i].md_func();
     }
   }

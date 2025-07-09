@@ -297,6 +297,7 @@ int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data, size_t len) {
 }
 
 int EVP_DigestFinal_ex(EVP_MD_CTX *ctx, uint8_t *md_out, unsigned int *size) {
+  crypto_method_update_state(nid_to_algorithm(ctx->digest->type), EVP_LAYER);
   if (ctx->digest == NULL) {
     return 0;
   }

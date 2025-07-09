@@ -10,12 +10,12 @@ struct crypto_usage_st {
   CRYPTO_refcount_t fips_usage;
 };
 
-enum algorithm_t {
-  MD5,
-  AES,
-  ALGORITHM_COUNT
+enum algorithm_log_t {
+  LOG_MD5,
+  LOG_AES,
+  LOG_ALGORITHM_COUNT
 };
 
-void crypto_usage_update_state(enum algorithms_t algorithm, enum FIPSStatus fips_status);
+void crypto_usage_update_state(enum algorithm_log_t algorithm, enum FIPSStatus fips_status);
 
 #endif

@@ -298,8 +298,6 @@ int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data, size_t len) {
 }
 
 int EVP_DigestFinal_ex(EVP_MD_CTX *ctx, uint8_t *md_out, unsigned int *size) {
-  log_function_call("EVP_DigestFinal_ex", AWSLC_NOT_APPROVED);
-  
   if (ctx->digest == NULL) {
     return 0;
   }

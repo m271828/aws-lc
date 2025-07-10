@@ -248,6 +248,6 @@ int AES_unwrap_key_padded(const AES_KEY *key, uint8_t *out, size_t *out_len,
   if(ret) {
     FIPS_service_indicator_update_state();
   }
-  crypto_usage_update_state(LOG_AES);
+  log_function_call("AES_unwrap_key_padded", FIPS_service_indicator_after_call());
   return ret;
 }

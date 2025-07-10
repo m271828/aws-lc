@@ -298,15 +298,8 @@ int EVP_DigestUpdate(EVP_MD_CTX *ctx, const void *data, size_t len) {
 }
 
 int EVP_DigestFinal_ex(EVP_MD_CTX *ctx, uint8_t *md_out, unsigned int *size) {
-  if (logging_enabled() && include_evp_calls()) {
-    if (include_params()) {
-      EVP_INFO *info = init_evp_info(EVP_TYPE_MD_CTX, ctx);
-      log_evp_layer_call("EVP_DigestFinal_ex", info);
-      delete_evp_info(info);
-    } else {
-      log_evp_layer_call("EVP_DigestFinal_ex");
-    }
-  }
+  log_function_call("EVP_DigestFinal_ex", AWSLC_NOT_APPROVED);
+  
   if (ctx->digest == NULL) {
     return 0;
   }

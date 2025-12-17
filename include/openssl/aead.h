@@ -22,71 +22,74 @@ extern "C" {
 #endif
 
 
-// Authenticated Encryption with Additional Data.
-//
-// AEAD couples confidentiality and integrity in a single primitive. AEAD
-// algorithms take a key and then can seal and open individual messages. Each
-// message has a unique, per-message nonce and, optionally, additional data
-// which is authenticated but not included in the ciphertext.
-//
-// The |EVP_AEAD_CTX_init| function initialises an |EVP_AEAD_CTX| structure and
-// performs any precomputation needed to use |aead| with |key|. The length of
-// the key, |key_len|, is given in bytes.
-//
-// The |tag_len| argument contains the length of the tags, in bytes, and allows
-// for the processing of truncated authenticators. A zero value indicates that
-// the default tag length should be used and this is defined as
-// |EVP_AEAD_DEFAULT_TAG_LENGTH| in order to make the code clear. Using
-// truncated tags increases an attacker's chance of creating a valid forgery.
-// Be aware that the attacker's chance may increase more than exponentially as
-// would naively be expected.
-//
-// When no longer needed, the initialised |EVP_AEAD_CTX| structure must be
-// passed to |EVP_AEAD_CTX_cleanup|, which will deallocate any memory used.
-//
-// With an |EVP_AEAD_CTX| in hand, one can seal and open messages. These
-// operations are intended to meet the standard notions of privacy and
-// authenticity for authenticated encryption. For formal definitions see
-// Bellare and Namprempre, "Authenticated encryption: relations among notions
-// and analysis of the generic composition paradigm," Lecture Notes in Computer
-// Science B<1976> (2000), 531–545,
-// http://www-cse.ucsd.edu/~mihir/papers/oem.html.
-//
-// When sealing messages, a nonce must be given. The length of the nonce is
-// fixed by the AEAD in use and is returned by |EVP_AEAD_nonce_length|. *The
-// nonce must be unique for all messages with the same key*. This is critically
-// important - nonce reuse may completely undermine the security of the AEAD.
-// Nonces may be predictable and public, so long as they are unique. Uniqueness
-// may be achieved with a simple counter or, if large enough, may be generated
-// randomly. The nonce must be passed into the "open" operation by the receiver
-// so must either be implicit (e.g. a counter), or must be transmitted along
-// with the sealed message.
-//
-// The "seal" and "open" operations are atomic - an entire message must be
-// encrypted or decrypted in a single call. Large messages may have to be split
-// up in order to accommodate this. When doing so, be mindful of the need not to
-// repeat nonces and the possibility that an attacker could duplicate, reorder
-// or drop message chunks. For example, using a single key for a given (large)
-// message and sealing chunks with nonces counting from zero would be secure as
-// long as the number of chunks was securely transmitted. (Otherwise an
-// attacker could truncate the message by dropping chunks from the end.)
-//
-// The number of chunks could be transmitted by prefixing it to the plaintext,
-// for example. This also assumes that no other message would ever use the same
-// key otherwise the rule that nonces must be unique for a given key would be
-// violated.
-//
-// The "seal" and "open" operations also permit additional data to be
-// authenticated via the |ad| parameter. This data is not included in the
-// ciphertext and must be identical for both the "seal" and "open" call. This
-// permits implicit context to be authenticated but may be empty if not needed.
-//
-// The "seal" and "open" operations may work in-place if the |out| and |in|
-// arguments are equal. Otherwise, if |out| and |in| alias, input data may be
-// overwritten before it is read. This situation will cause an error.
-//
-// The "seal" and "open" operations return one on success and zero on error.
-
+/**
+ * @file
+ * @brief Authenticated Encryption with Additional Data.
+ *
+ * @details
+ * AEAD couples confidentiality and integrity in a single primitive. AEAD
+ * algorithms take a key and then can seal and open individual messages. Each
+ * message has a unique, per-message nonce and, optionally, additional data
+ * which is authenticated but not included in the ciphertext.
+ *
+ * The #EVP_AEAD_CTX_init function initialises an EVP_AEAD_CTX structure and
+ * performs any precomputation needed to use `aead` with `key`. The length of
+ * the key, `key_len`, is given in bytes.
+ *
+ * The `tag_len` argument contains the length of the tags, in bytes, and allows
+ * for the processing of truncated authenticators. A 0 value indicates that
+ * the default tag length should be used and this is defined as
+ * #EVP_AEAD_DEFAULT_TAG_LENGTH in order to make the code clear. Using
+ * truncated tags increases an attacker's chance of creating a valid forgery.
+ * Be aware that the attacker's chance may increase more than exponentially as
+ * would naively be expected.
+ *
+ * When no longer needed, the initialised EVP_AEAD_CTX structure must be
+ * passed to #EVP_AEAD_CTX_cleanup, which will deallocate any memory used.
+ *
+ * With an EVP_AEAD_CTX in hand, one can seal and open messages. These
+ * operations are intended to meet the standard notions of privacy and
+ * authenticity for authenticated encryption. For formal definitions see
+ * Bellare and Namprempre, "Authenticated encryption: relations among notions
+ * and analysis of the generic composition paradigm," Lecture Notes in Computer
+ * Science B<1976> (2000), 531–545,
+ * http://www-cse.ucsd.edu/~mihir/papers/oem.html.
+ *
+ * When sealing messages, a nonce must be given. The length of the nonce is
+ * fixed by the AEAD in use and is returned by #EVP_AEAD_nonce_length. **The
+ * nonce must be unique for all messages with the same key.** This is critically
+ * important - nonce reuse may completely undermine the security of the AEAD.
+ * Nonces may be predictable and public, so long as they are unique. Uniqueness
+ * may be achieved with a simple counter or, if large enough, may be generated
+ * randomly. The nonce must be passed into the "open" operation by the receiver
+ * so must either be implicit (e.g. a counter), or must be transmitted along
+ * with the sealed message.
+ *
+ * The "seal" and "open" operations are atomic - an entire message must be
+ * encrypted or decrypted in a single call. Large messages may have to be split
+ * up in order to accommodate this. When doing so, be mindful of the need to not
+ * repeat nonces and the possibility that an attacker could duplicate, reorder
+ * or drop message chunks. For example, using a single key for a given (large)
+ * message and sealing chunks with nonces counting from zero would be secure as
+ * long as the number of chunks was securely transmitted. (Otherwise an
+ * attacker could truncate the message by dropping chunks from the end.)
+ *
+ * The number of chunks could be transmitted by prefixing it to the plaintext,
+ * for example. This also assumes that no other message would ever use the same
+ * key otherwise the rule that nonces must be unique for a given key would be
+ * violated.
+ *
+ * The "seal" and "open" operations also permit additional data to be
+ * authenticated via the `ad` parameter. This data is not included in the
+ * ciphertext and must be identical for both the "seal" and "open" call. This
+ * permits implicit context to be authenticated but may be empty if not needed.
+ *
+ * The "seal" and "open" operations may work in-place if the `out` and `in`
+ * arguments are equal. Otherwise, if `out` and `in` alias, input data may be
+ * overwritten before it is read. This situation will cause an error.
+ *
+ * The "seal" and "open" operations return 1 on success and 0 on error.
+ */
 
 // AEAD algorithms.
 
@@ -239,9 +242,13 @@ struct evp_aead_ctx_st {
 // defined in this header.
 #define EVP_AEAD_MAX_OVERHEAD 64
 
-// EVP_AEAD_DEFAULT_TAG_LENGTH is a magic value that can be passed to
-// EVP_AEAD_CTX_init to indicate that the default tag length for an AEAD should
-// be used.
+/**
+ * @brief Value used to indicate default tag length should be used.
+ *
+ * @details
+ * Magic value that can be passed to #EVP_AEAD_CTX_init to indicate that the
+ * default tag length for an AEAD should be used.
+ */
 #define EVP_AEAD_DEFAULT_TAG_LENGTH 0
 
 // EVP_AEAD_CTX_zero sets an uninitialized |ctx| to the zero state. It must be

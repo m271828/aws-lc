@@ -169,9 +169,11 @@ deprecated. Adding a description is optional.
 
 Note: The `@copy...` commands don't work correctly in the index of deprecated functions, so text may need to be copied.
 
-#### Structs Should Be Marked as Such
-Before each struct, use the [`@struct](https://www.doxygen.nl/manual/commands.html#cmdstruct) command for proper
-documentation linking.
+#### Structs, Unions, Enums and Defines Should Be Marked as Such
+Before each struct, use the [`@struct name`](https://www.doxygen.nl/manual/commands.html#cmdstruct) command for proper
+documentation linking. The same for [unions](https://www.doxygen.nl/manual/commands.html#cmdunion), 
+[enums](https://www.doxygen.nl/manual/commands.html#cmdenum) and
+[defines](https://www.doxygen.nl/manual/commands.html#cmddef).
 
 #### Special Handling of Typedefs
 Typedefs require special handling for correct format linking in our code base. Use the following block 

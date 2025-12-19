@@ -54,7 +54,10 @@
 #define OPENSSL_HEADER_BASE_H
 
 
-// This file should be the first included by all BoringSSL headers.
+/**
+ * @file
+ * @brief This file should be the first included by all AWS-LC headers.
+ */
 
 #include <stddef.h>
 #include <stdint.h>
@@ -360,6 +363,12 @@ typedef struct engine_st ENGINE;
 typedef struct env_md_ctx_st EVP_MD_CTX;
 typedef struct env_md_st EVP_MD;
 typedef struct evp_aead_st EVP_AEAD;
+
+/**
+ * @typedef EVP_AEAD_CTX
+ * @copydoc evp_aead_ctx_st
+ * @see evp_aead_ctx_st
+ */
 typedef struct evp_aead_ctx_st EVP_AEAD_CTX;
 typedef struct evp_cipher_ctx_st EVP_CIPHER_CTX;
 typedef struct evp_cipher_st EVP_CIPHER;

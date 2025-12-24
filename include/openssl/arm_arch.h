@@ -55,70 +55,143 @@
 
 #include <openssl/target.h>
 
-// arm_arch.h contains symbols used by ARM assembly, and the C code that calls
-// it. It is included as a public header to simplify the build, but is not
-// intended for external use.
+/**
+ * @file
+ * @brief Contains symbols used by ARM assembly.
+ *
+ * @details
+ * Contains symbols used by ARM assembly, and the C code that calls it.
+ *
+ * @warning It is included as a public header to simplify the build, but is not
+ * intended for external use.
+ */
 
 #if defined(OPENSSL_ARM) || defined(OPENSSL_AARCH64)
 
-// ARMV7_NEON is true when a NEON unit is present in the current CPU.
+/**
+ * @def ARMV7_NEON
+ *
+ * @brief True when a NEON unit is present in the current CPU.
+ */
 #define ARMV7_NEON (1 << 0)
 
-// ARMV8_AES indicates support for hardware AES instructions.
+/**
+ * @def ARMV8_AES
+ *
+ * @brief Indicates support for hardware AES instructions.
+ */
 #define ARMV8_AES (1 << 2)
 
-// ARMV8_SHA1 indicates support for hardware SHA-1 instructions.
+/**
+ * @def ARMV8_SHA1
+ *
+ * @brief Indicates support for hardware SHA-1 instructions.
+ */
 #define ARMV8_SHA1 (1 << 3)
 
-// ARMV8_SHA256 indicates support for hardware SHA-256 instructions.
+/**
+ * @def ARMV8_SHA256
+ *
+ * @brief Indicates support for hardware SHA-256 instructions.
+ */
 #define ARMV8_SHA256 (1 << 4)
 
-// ARMV8_PMULL indicates support for carryless multiplication.
+/**
+ * @def ARMV8_PMULL
+ *
+ * @brief Indicates support for carryless multiplication.
+ */
 #define ARMV8_PMULL (1 << 5)
 
-// ARMV8_SHA512 indicates support for hardware SHA-512 instructions.
+/**
+ * @def ARMV8_SHA512
+ *
+ * @brief Indicates support for hardware SHA-512 instructions.
+ */
 #define ARMV8_SHA512 (1 << 6)
 
-// ARMV8_SHA3 indicates support for hardware SHA-3 instructions including EOR3.
+/**
+ * @def ARMV8_SHA3
+ *
+ * @brief Indicates support for hardware SHA-3 instructions including EOR3.
+ */
 #define ARMV8_SHA3  (1 << 11)
 
-// Combination of all Armv8 Neon extension bits: 0x087c
-// NOTE: If you add further Armv8 Neon extension bits, adjust
-// "Test algorithm dispatch without CPU indicator or Neon extension capability bits"
-// in util/all_tests.json
+/**
+ * @name Armv8 Neon Extension Bits 0x087c
+ *
+ * @brief Combination of all Armv8 Neon extension bits: 0x087c
+ *
+ * @details
+ * The Neoverse N1, V1, V2, and Apple M1 micro-architectures are detected to
+ * allow selecting the fasted implementations for SHA3/SHAKE and AES-GCM.
+ * Combination of all CPU indicator bits: 0x7080
+ *
+ * @note If you add further CPU indicator bits, adjust "Test algorithm dispatch
+ * without CPU indicator bits" in util/all_tests.json.
+ *
+ * @note NOTE: If you add further Armv8 Neon extension bits, adjust "Test
+ * algorithm dispatch without CPU indicator or Neon extension capability bits"
+ * in util/all_tests.json
+ *
+ * @{
+ */
 
-// The Neoverse N1, V1, V2, and Apple M1 micro-architectures are detected to
-// allow selecting the fasted implementations for SHA3/SHAKE and AES-GCM.
-// Combination of all CPU indicator bits: 0x7080
-// NOTE: If you add further CPU indicator bits, adjust
-// "Test algorithm dispatch without CPU indicator bits" in util/all_tests.json.
 #define ARMV8_NEOVERSE_N1 (1 << 7)
 #define ARMV8_NEOVERSE_V1 (1 << 12)
 #define ARMV8_APPLE_M (1 << 13)
 #define ARMV8_NEOVERSE_V2 (1 << 14)
 
-// Combination of CPU indicator bits and Armv8 Neon extension bits: 0x78fc
+/** @} Armv8 Neon Extension Bits 0x087c */
 
-// ARMV8_DIT indicates support for the Data-Independent Timing (DIT) flag.
+/**
+ * @name Combination of CPU indicator bits and Armv8 Neon extension bits 0x78fc
+ *
+ * @{
+ */
+
+/**
+ * @def ARMV8_DIT
+ *
+ * @brief Indicates support for the Data-Independent Timing (DIT) flag.
+ */
 #define ARMV8_DIT (1 << 15)
-// ARMV8_DIT_ALLOWED is a run-time en/disabler for the Data-Independent
-// Timing (DIT) flag capability. It makes the DIT capability allowed when it is
-// first discovered in |OPENSSL_cpuid_setup|. But that bit position in
-// |OPENSSL_armcap_P| can be toggled off and back on at run-time via
-// |armv8_disable_dit| and |armv8_enable_dit|, respectively.
+
+/**
+ * @def ARMV8_DIT_ALLOWED
+ *
+ * @brief A run-time en/disabler for the Data-Independent
+ *
+ * @details
+ * Timing (DIT) flag capability. It makes the DIT capability allowed when it is
+ * first discovered in #OPENSSL_cpuid_setup. But that bit position in
+ * #OPENSSL_armcap_P can be toggled off and back on at run-time via
+ * #armv8_disable_dit and #armv8_enable_dit, respectively.
+ */
 #define ARMV8_DIT_ALLOWED (1 << 16)
 
-// ARMV8_RNG indicates supports for hardware RNG instruction RNDR.
+/**
+ * @def ARMV8_RNG
+ *
+ * @brief Indicates supports for hardware RNG instruction RNDR.
+ */
 #define ARMV8_RNG (1 << 17)
 
-//
-// MIDR_EL1 system register
-//
-// 63___ _ ___32_31___ _ ___24_23_____20_19_____16_15__ _ __4_3_______0
-// |            |             |         |         |          |        |
-// |RES0        | Implementer | Variant | Arch    | PartNum  |Revision|
-// |____ _ _____|_____ _ _____|_________|_______ _|____ _ ___|________|
-//
+/** @} Combination of CPU indicator bits and Armv8 Neon extension bits 0x78fc */
+
+/**
+ * @name MIDR_EL1 System Register
+ *
+ * @details
+ * @verbatim
+ * 63___ _ ___32_31___ _ ___24_23_____20_19_____16_15__ _ __4_3_______0
+ * |            |             |         |         |          |        |
+ * |RES0        | Implementer | Variant | Arch    | PartNum  |Revision|
+ * |____ _ _____|_____ _ _____|_________|_______ _|____ _ ___|________|
+ * @endverbatim
+ *
+ * @{
+ */
 
 # define ARM_CPU_IMP_ARM           0x41
 
@@ -155,6 +228,7 @@
 # define MIDR_IS_CPU_MODEL(midr, imp, partnum) \
            (((midr) & MIDR_CPU_MODEL_MASK) == MIDR_CPU_MODEL(imp, partnum))
 
+/** @} MIDR_EL1 System Register */
 #endif  // ARM || AARCH64
 
 #endif  // OPENSSL_HEADER_ARM_ARCH_H

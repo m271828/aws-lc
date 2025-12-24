@@ -309,7 +309,8 @@ OPENSSL_EXPORT int EVP_DecodeBlock(uint8_t *dst, const uint8_t *src,
 
 /**
  * @struct evp_encode_ctx_st
- * Encoding Context
+ *
+ * @brief Encoding Context
  */
 struct evp_encode_ctx_st {
   /**

@@ -66,7 +66,7 @@
  * intended for external use.
  */
 
-#if defined(OPENSSL_ARM) || defined(OPENSSL_AARCH64)
+#if defined(OPENSSL_ARM) || defined(OPENSSL_AARCH64) || defined(DOCUMENTATION_BUILD)
 
 /**
  * @def ARMV7_NEON
@@ -164,9 +164,9 @@
  *
  * @details
  * Timing (DIT) flag capability. It makes the DIT capability allowed when it is
- * first discovered in #OPENSSL_cpuid_setup. But that bit position in
- * #OPENSSL_armcap_P can be toggled off and back on at run-time via
- * #armv8_disable_dit and #armv8_enable_dit, respectively.
+ * first discovered in `OPENSSL_cpuid_setup`. But that bit position in
+ * `OPENSSL_armcap_P` can be toggled off and back on at run-time via
+ * `armv8_disable_dit` and `armv8_enable_dit`, respectively.
  */
 #define ARMV8_DIT_ALLOWED (1 << 16)
 
